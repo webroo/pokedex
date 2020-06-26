@@ -1,6 +1,7 @@
-import { gql } from 'apollo-server-micro';
+import { gql, IResolvers } from 'apollo-server-micro';
 import { Pokemon, Species, PokemonAbility, Ability, Form } from './dataSources';
 import { ResolverContext } from './resolverContext';
+import { connectionFromResourceList, Connection } from './connections';
 
 export const typeDefs = gql`
   type Species {
@@ -22,9 +23,9 @@ export const typeDefs = gql`
     ability: Ability!
   }
 
-  type PokemonAbilityList {
-    count: Int!
-    results: [PokemonAbility!]!
+  type PokemonAbilityConnection {
+    totalItems: Int!
+    items: [PokemonAbility!]!
   }
 
   type Form {
@@ -33,9 +34,9 @@ export const typeDefs = gql`
     formName: String!
   }
 
-  type FormList {
-    count: Int!
-    results: [Form!]!
+  type FormConnection {
+    totalItems: Int!
+    items: [Form!]!
   }
 
   type Pokemon {
@@ -45,149 +46,80 @@ export const typeDefs = gql`
     weight: Int!
     baseExperience: Int!
     species: Species!
-    abilities(offset: Int = 0, limit: Int = 20): PokemonAbilityList!
-    forms(offset: Int = 0, limit: Int = 20): FormList!
+    abilities(offset: Int = 0, limit: Int = 20): PokemonAbilityConnection!
+    forms(offset: Int = 0, limit: Int = 20): FormConnection!
   }
 
-  type PokemonList {
-    count: Int!
-    results: [Pokemon!]!
+  type PokemonConnection {
+    totalItems: Int!
+    items: [Pokemon!]!
   }
 
-  type AbilityList {
-    count: Int!
-    results: [Ability!]!
+  type AbilityConnection {
+    totalItems: Int!
+    items: [Ability!]!
   }
 
   type Query {
     pokemon(id: ID!): Pokemon
-    allPokemon(offset: Int!, limit: Int!): PokemonList!
-    allAbilities(offset: Int!, limit: Int!): AbilityList!
+    allPokemon(offset: Int!, limit: Int!): PokemonConnection!
+    ability(id: ID!): Ability
+    allAbilities(offset: Int!, limit: Int!): AbilityConnection!
   }
 `;
+
+interface IdArgs {
+  id: string;
+}
 
 interface ListArgs {
   offset: number;
   limit: number;
 }
 
-interface List<T> {
-  count: number;
-  results: T[];
-}
-
-export const resolvers = {
+export const resolvers: IResolvers<any, ResolverContext> = {
   Query: {
-    async pokemon(_root: void, args: { id: string }, ctx: ResolverContext) {
-      return await ctx.dataSources.pokeApi.getPokemon(args.id);
+    async pokemon(_, args: IdArgs, { dataSources }) {
+      return await dataSources.pokeApi.getResource<Pokemon>('pokemon', args.id);
     },
-    async allPokemon(
-      _root: void,
-      args: ListArgs,
-      ctx: ResolverContext
-    ): Promise<List<Pokemon>> {
-      const pokemonList = await ctx.dataSources.pokeApi.getPokemonList(
-        args.offset,
-        args.limit
-      );
-      const results = await Promise.all(
-        pokemonList.results.map(apiResouce =>
-          ctx.dataSources.pokeApi.getResourceFromUrl<Pokemon>(apiResouce.url)
-        )
-      );
-      return {
-        count: pokemonList.count,
-        results,
-      };
+    allPokemon: connectionFromResourceList<Pokemon>('pokemon'),
+    async ability(_, args: IdArgs, { dataSources }) {
+      return await dataSources.pokeApi.getResource<Pokemon>('ability', args.id);
     },
-
-    /*
-    This resolver fetches a pre-paginated NamedApiResourceList items and then fetches each item in it
-      // this result is fetched from the pokeapi, then we fetch each item in `results`
-      abilities: {
-        count,
-        results: [
-          { name, url},
-          ...etc
-        ],
-      ]
-    */
-    async allAbilities(
-      _root: void,
-      args: ListArgs,
-      ctx: ResolverContext
-    ): Promise<List<Ability>> {
-      const abilityList = await ctx.dataSources.pokeApi.getAbilityList(
-        args.offset,
-        args.limit
-      );
-      const results = await Promise.all(
-        abilityList.results.map(apiResouce =>
-          ctx.dataSources.pokeApi.getResourceFromUrl<Ability>(apiResouce.url)
-        )
-      );
-      return {
-        count: abilityList.count,
-        results,
-      };
-    },
+    allAbilities: connectionFromResourceList<Ability>('ability'),
   },
   PokemonAbility: {
-    async ability(parent: PokemonAbility, _args: void, ctx: ResolverContext) {
-      return await ctx.dataSources.pokeApi.getResourceFromUrl<Ability>(
-        parent.ability.url
-      );
+    async ability(parent: PokemonAbility, _, { dataSources }) {
+      return await dataSources.pokeApi.getUrl<Ability>(parent.ability.url);
     },
   },
   Pokemon: {
-    async species(parent: Pokemon, _args: void, ctx: ResolverContext) {
-      return await ctx.dataSources.pokeApi.getResourceFromUrl<Species>(
-        parent.species.url
-      );
+    async species(parent: Pokemon, _, { dataSources }) {
+      return await dataSources.pokeApi.getUrl<Species>(parent.species.url);
     },
-
-    /*
-    This resolver simply paginates an array of non-fetchable items:
-      abilities: [
-        {
-          slot,
-          isHidden,
-          ability: { name, url }
-        },
-        ...etc
-      ]
-    */
-    abilities(parent: Pokemon, args: ListArgs): List<PokemonAbility> {
-      return {
-        count: parent.abilities.length,
-        results: parent.abilities.slice(args.offset, args.offset + args.limit),
-      };
-    },
-
-    /*
-    This resolver paginates and fetches items from an array of NamedApiResources:
-      forms: [
-        { name, url},
-        ...etc
-      ]
-    */
     async forms(
       parent: Pokemon,
       args: ListArgs,
-      ctx: ResolverContext
-    ): Promise<List<Form>> {
-      const formResources = parent.forms.slice(
+      { dataSources }
+    ): Promise<Connection<Form>> {
+      const resources = parent.forms.slice(
         args.offset,
         args.offset + args.limit
       );
-      const results = await Promise.all(
-        formResources.map(apiResouce =>
-          ctx.dataSources.pokeApi.getResourceFromUrl<Form>(apiResouce.url)
+      const fetchedResults = await Promise.all(
+        resources.map(resource =>
+          dataSources.pokeApi.getUrl<Form>(resource.url)
         )
       );
       return {
-        count: parent.forms.length,
-        results,
+        totalItems: parent.forms.length,
+        items: fetchedResults,
+      };
+    },
+    abilities(parent: Pokemon, args: ListArgs): Connection<PokemonAbility> {
+      return {
+        totalItems: parent.abilities.length,
+        items: parent.abilities.slice(args.offset, args.offset + args.limit),
       };
     },
   },

@@ -1,5 +1,7 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
 
+export type ResourceType = 'pokemon' | 'ability';
+
 export interface NamedApiResource {
   name: string;
   url: string;
@@ -59,33 +61,27 @@ const camelCaseKeys = (obj: any): any => {
 };
 
 export class PokeApi extends RESTDataSource {
-  async getPokemon(id: string): Promise<Pokemon> {
-    const response = await this.get(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    return camelCaseKeys(response);
-  }
-
-  async getPokemonList(
+  async getResourceList(
+    type: string,
     offset: number,
     limit: number
   ): Promise<NamedApiResourceList> {
-    const response = await this.get(
-      `https://pokeapi.co/api/v2/pokemon?offset=${offset}&limit=${limit}`
+    const response = await this.get<NamedApiResourceList>(
+      `https://pokeapi.co/api/v2/${type}`,
+      { offset, limit }
     );
     return camelCaseKeys(response);
   }
 
-  async getAbilityList(
-    offset: number,
-    limit: number
-  ): Promise<NamedApiResourceList> {
-    const response = await this.get(
-      `https://pokeapi.co/api/v2/ability?offset=${offset}&limit=${limit}`
+  async getResource<T>(type: ResourceType, id: string): Promise<T> {
+    const response = await this.get<T>(
+      `https://pokeapi.co/api/v2/${type}/${id}/`
     );
     return camelCaseKeys(response);
   }
 
-  async getResourceFromUrl<T>(url: string): Promise<T> {
-    const response = await this.get(url);
+  async getUrl<T>(url: string): Promise<T> {
+    const response = await this.get<T>(url);
     return camelCaseKeys(response);
   }
 }

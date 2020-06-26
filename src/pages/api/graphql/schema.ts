@@ -1,5 +1,13 @@
 import { gql, IResolvers } from 'apollo-server-micro';
-import { Pokemon, Species, PokemonAbility, Ability, Form } from './dataSources';
+import {
+  Pokemon,
+  Species,
+  PokemonAbility,
+  Ability,
+  Form,
+  ResourceType,
+  NamedApiResource,
+} from './dataSources';
 import { ResolverContext } from './resolverContext';
 import {
   connectionFromResourceList,
@@ -76,26 +84,37 @@ interface IdArgs {
   id: string;
 }
 
+const getRootResource = <T>(type: ResourceType) => async (
+  _: void,
+  args: IdArgs,
+  { dataSources }: ResolverContext
+) => {
+  return await dataSources.pokeApi.getResource<T>(type, args.id);
+};
+
+const getResource = <TParent, TItem>(
+  fieldSelector: (parent: TParent) => NamedApiResource
+) => async (
+  parent: TParent,
+  _: void,
+  { dataSources }: ResolverContext
+): Promise<TItem> => {
+  const resource = fieldSelector(parent);
+  return await dataSources.pokeApi.getUrl<TItem>(resource.url);
+};
+
 export const resolvers: IResolvers<any, ResolverContext> = {
   Query: {
-    async pokemon(_, args: IdArgs, { dataSources }) {
-      return await dataSources.pokeApi.getResource<Pokemon>('pokemon', args.id);
-    },
+    pokemon: getRootResource<Pokemon>('pokemon'),
     allPokemon: connectionFromResourceList<Pokemon>('pokemon'),
-    async ability(_, args: IdArgs, { dataSources }) {
-      return await dataSources.pokeApi.getResource<Pokemon>('ability', args.id);
-    },
+    ability: getRootResource<Ability>('ability'),
     allAbilities: connectionFromResourceList<Ability>('ability'),
   },
   PokemonAbility: {
-    async ability(parent: PokemonAbility, _, { dataSources }) {
-      return await dataSources.pokeApi.getUrl<Ability>(parent.ability.url);
-    },
+    ability: getResource<PokemonAbility, Ability>(parent => parent.ability),
   },
   Pokemon: {
-    async species(parent: Pokemon, _, { dataSources }) {
-      return await dataSources.pokeApi.getUrl<Species>(parent.species.url);
-    },
+    species: getResource<Pokemon, Species>(parent => parent.species),
     forms: connectionFromResourceArray<Pokemon, Form>(parent => parent.forms),
     abilities: connectionFromArray<Pokemon, PokemonAbility>(
       parent => parent.abilities

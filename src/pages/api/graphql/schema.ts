@@ -1,7 +1,11 @@
 import { gql, IResolvers } from 'apollo-server-micro';
 import { Pokemon, Species, PokemonAbility, Ability, Form } from './dataSources';
 import { ResolverContext } from './resolverContext';
-import { connectionFromResourceList, Connection } from './connections';
+import {
+  connectionFromResourceList,
+  connectionFromResourceArray,
+  connectionFromArray,
+} from './connections';
 
 export const typeDefs = gql`
   type Species {
@@ -72,11 +76,6 @@ interface IdArgs {
   id: string;
 }
 
-interface ListArgs {
-  offset: number;
-  limit: number;
-}
-
 export const resolvers: IResolvers<any, ResolverContext> = {
   Query: {
     async pokemon(_, args: IdArgs, { dataSources }) {
@@ -97,30 +96,9 @@ export const resolvers: IResolvers<any, ResolverContext> = {
     async species(parent: Pokemon, _, { dataSources }) {
       return await dataSources.pokeApi.getUrl<Species>(parent.species.url);
     },
-    async forms(
-      parent: Pokemon,
-      args: ListArgs,
-      { dataSources }
-    ): Promise<Connection<Form>> {
-      const resources = parent.forms.slice(
-        args.offset,
-        args.offset + args.limit
-      );
-      const fetchedResults = await Promise.all(
-        resources.map(resource =>
-          dataSources.pokeApi.getUrl<Form>(resource.url)
-        )
-      );
-      return {
-        totalItems: parent.forms.length,
-        items: fetchedResults,
-      };
-    },
-    abilities(parent: Pokemon, args: ListArgs): Connection<PokemonAbility> {
-      return {
-        totalItems: parent.abilities.length,
-        items: parent.abilities.slice(args.offset, args.offset + args.limit),
-      };
-    },
+    forms: connectionFromResourceArray<Pokemon, Form>(parent => parent.forms),
+    abilities: connectionFromArray<Pokemon, PokemonAbility>(
+      parent => parent.abilities
+    ),
   },
 };

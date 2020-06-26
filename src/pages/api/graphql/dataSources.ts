@@ -52,8 +52,9 @@ const camelCaseKeys = (obj: any): any => {
   if (obj != null && obj.constructor === Object) {
     return Object.keys(obj).reduce((acc, key) => {
       const newKey = key.replace(/_([a-z])/g, s => s[1].toUpperCase());
-      return { ...acc, [newKey]: camelCaseKeys(obj[key]) };
-    }, {});
+      acc[newKey] = camelCaseKeys(obj[key]);
+      return acc;
+    }, {} as any);
   } else if (Array.isArray(obj)) {
     return obj.map(v => camelCaseKeys(v));
   }

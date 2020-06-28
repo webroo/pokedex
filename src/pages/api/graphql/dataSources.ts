@@ -62,7 +62,7 @@ const camelCaseKeys = (obj: any): any => {
 };
 
 export class PokeApi extends RESTDataSource {
-  async getResourceList(
+  async getRootResourceList(
     type: string,
     offset: number,
     limit: number
@@ -74,7 +74,7 @@ export class PokeApi extends RESTDataSource {
     return camelCaseKeys(response);
   }
 
-  async getResource<T>(type: ResourceType, id: string): Promise<T> {
+  async getRootResource<T>(type: ResourceType, id: string): Promise<T> {
     const response = await this.get<T>(
       `https://pokeapi.co/api/v2/${type}/${id}/`
     );

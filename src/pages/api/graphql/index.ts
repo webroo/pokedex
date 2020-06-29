@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-micro';
-import { dataSources } from './dataSources';
-import { typeDefs, resolvers } from './schema';
+import { dataSources } from './dataSources/pokeApi';
+import { typeDefs, resolvers } from './schemas';
 
 const apolloServer = new ApolloServer({
   typeDefs,

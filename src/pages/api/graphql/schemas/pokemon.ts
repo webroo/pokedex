@@ -1,25 +1,25 @@
 import { gql } from 'apollo-server-micro';
-import { Pokemon, Species, PokemonAbility, Ability, Form } from './dataSources';
+import {
+  Pokemon,
+  Species,
+  PokemonAbility,
+  Ability,
+  Form,
+} from '../dataSources/pokeApiTypes';
 import {
   rootResource,
   rootResourceList,
   linkedResource,
   connectionToResourceArray,
   connectionToArray,
-} from './commonResolvers';
+} from '../commonResolvers';
 
-export const typeDefs = gql`
+export const pokemonTypeDefs = gql`
   type Species {
     id: ID!
     name: String!
     captureRate: Int!
     baseHappiness: Int!
-  }
-
-  type Ability {
-    id: ID!
-    name: String!
-    isMainSeries: Boolean!
   }
 
   type PokemonAbility {
@@ -60,25 +60,16 @@ export const typeDefs = gql`
     items: [Pokemon!]!
   }
 
-  type AbilityConnection {
-    totalItems: Int!
-    items: [Ability!]!
-  }
-
-  type Query {
+  extend type Query {
     pokemon(id: ID!): Pokemon
     allPokemon(offset: Int!, limit: Int!): PokemonConnection!
-    ability(id: ID!): Ability
-    allAbilities(offset: Int!, limit: Int!): AbilityConnection!
   }
 `;
 
-export const resolvers = {
+export const pokemonResolvers = {
   Query: {
     pokemon: rootResource<Pokemon>('pokemon'),
     allPokemon: rootResourceList<Pokemon>('pokemon'),
-    ability: rootResource<Ability>('ability'),
-    allAbilities: rootResourceList<Ability>('ability'),
   },
   PokemonAbility: {
     ability: linkedResource<PokemonAbility, Ability>(parent => parent.ability),

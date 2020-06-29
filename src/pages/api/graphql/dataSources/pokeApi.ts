@@ -44,7 +44,3 @@ export class PokeApi extends RESTDataSource {
     return camelCaseKeys(response);
   }
 }
-
-export const dataSources = {
-  pokeApi: new PokeApi(),
-};

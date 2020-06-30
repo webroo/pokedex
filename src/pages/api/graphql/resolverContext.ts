@@ -1,4 +1,4 @@
-import { dataSources } from './dataSources/pokeApi';
+import dataSources from './dataSources';
 
 export interface ResolverContext {
   dataSources: typeof dataSources;

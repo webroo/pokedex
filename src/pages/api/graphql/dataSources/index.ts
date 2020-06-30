@@ -1,5 +1,5 @@
 import { PokeApi } from './pokeApi';
 
-export const dataSources = {
+export default {
   pokeApi: new PokeApi(),
 };

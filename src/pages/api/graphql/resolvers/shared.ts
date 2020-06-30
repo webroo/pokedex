@@ -1,6 +1,6 @@
-import { ResolverContext } from './resolverContext';
-import { NamedApiResource } from './dataSources/pokeApiTypes';
-import { ResourceType } from './dataSources/pokeApi';
+import { ResolverContext } from '../resolverContext';
+import { NamedApiResource } from '../dataSources/pokeApiTypes';
+import { ResourceType } from '../dataSources/pokeApi';
 
 export interface RootResourceArgs {
   id: string;

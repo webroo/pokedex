@@ -78,7 +78,7 @@ export const connectionToResourceArray = <TParent, TResource>(
 };
 
 export const connectionToArray = <TParent, TArrayElement>(
-  fieldSelector: (parent: TParent) => any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  fieldSelector: (parent: TParent) => any[]
 ) => (
   parent: TParent,
   { offset, limit }: ConnectionArgs

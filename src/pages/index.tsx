@@ -1,65 +1,52 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import Head from 'next/head';
-import { gql, useQuery } from '@apollo/client';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useGetAllPokemon } from '../hooks/useGetAllPokemon';
+import styles from './index.module.css';
 
-interface Pokemon {
+interface PokemonProps {
   id: string;
   name: string;
-  weight: number;
-  height: number;
+  spriteUrl: string;
 }
 
-interface GetPokemonQuery {
-  pokemon: Pokemon;
-}
+const Pokemon: FunctionComponent<PokemonProps> = ({ id, name, spriteUrl }) => (
+  <Link href={`/pokemon/${name}`}>
+    <a className={styles.pokemonListItem}>
+      <Image src={spriteUrl} width={96} height={96} alt={`name`} />
+      <div>#{id}</div>
+      <div>{name[0].toUpperCase() + name.slice(1)}</div>
+    </a>
+  </Link>
+);
 
-interface GetPokemonQueryVariables {
-  id: string;
-}
-
-const GET_POKEMON = gql`
-  query GetPokemon($id: ID!) {
-    pokemon(id: $id) {
-      id
-      name
-      weight
-      height
-    }
-  }
-`;
-
-const Home = () => {
-  const { loading, data, error } = useQuery<
-    GetPokemonQuery,
-    GetPokemonQueryVariables
-  >(GET_POKEMON, {
-    variables: { id: '1' },
-  });
+const Home: FunctionComponent = () => {
+  const { loading, data, error } = useGetAllPokemon({ offset: 0, limit: 3 });
 
   return (
-    <div>
+    <>
       <Head>
         <title>Pokédex</title>
       </Head>
-
       <main>
         <h1>Pokédex</h1>
         {loading && <div>Loading...</div>}
         {error && <div>Error</div>}
         {data && (
-          <dl>
-            <dt>ID</dt>
-            <dd>{data.pokemon.id}</dd>
-            <dt>Name</dt>
-            <dd>{data.pokemon.name}</dd>
-            <dt>Weight</dt>
-            <dd>{data.pokemon.weight}</dd>
-            <dt>Height</dt>
-            <dd>{data.pokemon.height}</dd>
-          </dl>
+          <div className={styles.pokemonList}>
+            {data.allPokemon.items.map(pokemon => (
+              <Pokemon
+                key={pokemon.id}
+                id={pokemon.id}
+                name={pokemon.name}
+                spriteUrl={pokemon.sprites.frontDefault}
+              />
+            ))}
+          </div>
         )}
       </main>
-    </div>
+    </>
   );
 };
 

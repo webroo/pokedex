@@ -33,6 +33,13 @@ export interface Form {
   formName: string;
 }
 
+export interface PokemonSprites {
+  backDefault: string;
+  backShiny: string;
+  frontDefault: string;
+  frontShiny: string;
+}
+
 export interface Pokemon {
   id: string;
   name: string;
@@ -42,4 +49,5 @@ export interface Pokemon {
   species: NamedApiResource;
   abilities: PokemonAbility[];
   forms: NamedApiResource[];
+  sprites: PokemonSprites;
 }

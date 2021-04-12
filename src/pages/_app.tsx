@@ -6,6 +6,7 @@ import {
   InMemoryCache,
   HttpLink,
 } from '@apollo/client';
+import './global.css';
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),

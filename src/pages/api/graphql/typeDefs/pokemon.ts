@@ -30,6 +30,13 @@ export default gql`
     items: [Form!]!
   }
 
+  type PokemonSprites {
+    backDefault: String!
+    backShiny: String!
+    frontDefault: String!
+    frontShiny: String!
+  }
+
   type Pokemon {
     id: ID!
     name: String!
@@ -39,6 +46,7 @@ export default gql`
     species: Species!
     abilities(offset: Int = 0, limit: Int = 20): PokemonAbilityConnection!
     forms(offset: Int = 0, limit: Int = 20): FormConnection!
+    sprites: PokemonSprites!
   }
 
   type PokemonConnection {

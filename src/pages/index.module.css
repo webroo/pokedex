@@ -1,0 +1,7 @@
+.pokemonList {
+  display: flex
+}
+
+.pokemonListItem {
+  text-align: center;
+}

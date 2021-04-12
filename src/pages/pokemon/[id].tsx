@@ -1,17 +1,37 @@
 import React, { FunctionComponent } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/dist/client/router';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useGetPokemon } from '../../hooks/useGetPokemon';
+import { capitalize } from '../../utils/stringUtils';
 
 const Pokemon: FunctionComponent = () => {
   const { query } = useRouter();
-  console.log(`query:`, query);
+
+  const { loading, data, error } = useGetPokemon(
+    { id: `${query.id}` },
+    { skip: !query.id }
+  );
 
   return (
     <>
       <Head>
-        <title>Pokédex - POKEMON NAME GOES HERE</title>
+        <title>Pokédex - {capitalize(data?.pokemon.name ?? '')}</title>
       </Head>
-      <div>Pokemon</div>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error</div>}
+      {data && (
+        <div>
+          <Image
+            src={data.pokemon.sprites.frontDefault}
+            width={96}
+            height={96}
+            alt={data.pokemon.name}
+          />
+          <div>#{data.pokemon.id}</div>
+          <div>{capitalize(data.pokemon.name)}</div>
+        </div>
+      )}
     </>
   );
 };

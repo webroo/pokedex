@@ -14,6 +14,10 @@ const GET_POKEMON = gql`
   }
 `;
 
+export interface GetPokemonOptions {
+  skip?: boolean;
+}
+
 // TODO generate these types
 export interface GetPokemonVariables {
   id: string;
@@ -31,6 +35,12 @@ export interface GetPokemonResult {
   };
 }
 
-export const useGetPokemon = (variables: GetPokemonVariables) => {
-  return useQuery<GetPokemonResult>(GET_POKEMON, { variables });
+export const useGetPokemon = (
+  variables: GetPokemonVariables,
+  options?: GetPokemonOptions
+) => {
+  return useQuery<GetPokemonResult>(GET_POKEMON, {
+    variables,
+    skip: options?.skip,
+  });
 };

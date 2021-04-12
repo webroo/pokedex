@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useGetAllPokemon } from '../hooks/useGetAllPokemon';
 import styles from './index.module.css';
+import { capitalize } from '../utils/stringUtils';
 
 interface PokemonProps {
   id: string;
@@ -14,9 +15,9 @@ interface PokemonProps {
 const Pokemon: FunctionComponent<PokemonProps> = ({ id, name, spriteUrl }) => (
   <Link href={`/pokemon/${name}`}>
     <a className={styles.pokemonListItem}>
-      <Image src={spriteUrl} width={96} height={96} alt={`name`} />
+      <Image src={spriteUrl} width={96} height={96} alt={name} />
       <div>#{id}</div>
-      <div>{name[0].toUpperCase() + name.slice(1)}</div>
+      <div>{capitalize(name)}</div>
     </a>
   </Link>
 );

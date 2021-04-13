@@ -1,35 +1,48 @@
 import React, { FunctionComponent } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
-import { useGetPokemon } from '../../hooks/useGetPokemon';
+import { GetPokemonResult, GET_POKEMON_QUERY } from '../../hooks/useGetPokemon';
 import { capitalize } from '../../utils/stringUtils';
+import { queryGraphQL } from '../api/graphql';
+import { GetServerSideProps } from 'next';
 
-const Pokemon: FunctionComponent = () => {
-  const { query } = useRouter();
+// TODO clean up prop types
+interface PokemonProps {
+  pokemon?: GetPokemonResult['pokemon'];
+  errors?: boolean;
+}
 
-  const { loading, data, error } = useGetPokemon(
-    { id: `${query.id}` },
-    { skip: !query.id }
-  );
+export const getServerSideProps: GetServerSideProps<PokemonProps> = async context => {
+  // TODO create some sensible type abstractions around making graphql queries directly
+  const { data, errors } = await queryGraphQL(GET_POKEMON_QUERY, {
+    id: context.query.id,
+  });
 
+  return {
+    props: {
+      pokemon: data?.pokemon,
+      // TODO should such errors be handled as 500?
+      errors,
+    },
+  };
+};
+
+const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon, errors }) => {
   return (
     <>
       <Head>
-        <title>Pokédex - {capitalize(data?.pokemon.name ?? '')}</title>
+        <title>Pokédex - {capitalize(pokemon?.name ?? '')}</title>
       </Head>
-      {loading && <div>Loading...</div>}
-      {error && <div>Error</div>}
-      {data && (
+      {errors && <div>Error</div>}
+      {pokemon && (
         <div>
+          <h1>{capitalize(pokemon.name)}</h1>
           <Image
-            src={data.pokemon.sprites.frontDefault}
+            src={pokemon.sprites.frontDefault}
             width={96}
             height={96}
-            alt={data.pokemon.name}
+            alt={pokemon.name}
           />
-          <div>#{data.pokemon.id}</div>
-          <div>{capitalize(data.pokemon.name)}</div>
         </div>
       )}
     </>

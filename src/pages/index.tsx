@@ -1,18 +1,27 @@
 import React, { FunctionComponent } from 'react';
+import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useGetAllPokemon } from '../hooks/useGetAllPokemon';
-import styles from './index.module.css';
+import {
+  GetAllPokemonResult,
+  GET_ALL_POKEMON_QUERY,
+} from '../apollo/getAllPokemon';
+import { ApolloQueryResponse, queryApolloServer } from './api/graphql';
 import { capitalize } from '../utils/stringUtils';
+import styles from './index.module.css';
 
-interface PokemonProps {
+interface PokemonItemProps {
   id: string;
   name: string;
   spriteUrl: string;
 }
 
-const Pokemon: FunctionComponent<PokemonProps> = ({ id, name, spriteUrl }) => (
+const PokemonItem: FunctionComponent<PokemonItemProps> = ({
+  id,
+  name,
+  spriteUrl,
+}) => (
   <Link href={`/pokemon/${name}`}>
     <a className={styles.pokemonListItem}>
       <Image src={spriteUrl} width={96} height={96} alt={name} />
@@ -22,9 +31,19 @@ const Pokemon: FunctionComponent<PokemonProps> = ({ id, name, spriteUrl }) => (
   </Link>
 );
 
-const Home: FunctionComponent = () => {
-  const { loading, data, error } = useGetAllPokemon({ offset: 0, limit: 3 });
+export type PokemonListProps = ApolloQueryResponse<GetAllPokemonResult>;
 
+export const getServerSideProps: GetServerSideProps<PokemonListProps> = async () => {
+  const response = await queryApolloServer<GetAllPokemonResult>(
+    GET_ALL_POKEMON_QUERY,
+    { offset: 0, limit: 9 }
+  );
+  return {
+    props: response,
+  };
+};
+
+const PokemonList: FunctionComponent<PokemonListProps> = ({ data, error }) => {
   return (
     <>
       <Head>
@@ -32,12 +51,11 @@ const Home: FunctionComponent = () => {
       </Head>
       <main>
         <h1>Pokédex</h1>
-        {loading && <div>Loading...</div>}
-        {error && <div>Error</div>}
+        {error && <div>{error}</div>}
         {data && (
           <div className={styles.pokemonList}>
             {data.allPokemon.items.map(pokemon => (
-              <Pokemon
+              <PokemonItem
                 key={pokemon.id}
                 id={pokemon.id}
                 name={pokemon.name}
@@ -51,4 +69,4 @@ const Home: FunctionComponent = () => {
   );
 };
 
-export default Home;
+export default PokemonList;

@@ -1,6 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
-
-const GET_ALL_POKEMON = gql`
+export const GET_ALL_POKEMON_QUERY = `
   query GetAllPokemon($offset: Int!, $limit: Int!) {
     allPokemon(offset: $offset, limit: $limit) {
       totalItems
@@ -33,7 +31,3 @@ export interface GetAllPokemonResult {
     }>;
   };
 }
-
-export const useGetAllPokemon = (variables: GetAllPokemonVariables) => {
-  return useQuery<GetAllPokemonResult>(GET_ALL_POKEMON, { variables });
-};

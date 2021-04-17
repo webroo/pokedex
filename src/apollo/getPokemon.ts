@@ -1,5 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
-
 export const GET_POKEMON_QUERY = `
   query GetPokemon($id: ID!) {
     pokemon(id: $id) {
@@ -13,14 +11,6 @@ export const GET_POKEMON_QUERY = `
     }
   }
 `;
-
-const GET_POKEMON_QUERY_TAG = gql`
-  ${GET_POKEMON_QUERY}
-`;
-
-export interface GetPokemonOptions {
-  skip?: boolean;
-}
 
 // TODO generate these types
 export interface GetPokemonVariables {
@@ -38,13 +28,3 @@ export interface GetPokemonResult {
     };
   };
 }
-
-export const useGetPokemon = (
-  variables: GetPokemonVariables,
-  options?: GetPokemonOptions
-) => {
-  return useQuery<GetPokemonResult>(GET_POKEMON_QUERY_TAG, {
-    variables,
-    skip: options?.skip,
-  });
-};

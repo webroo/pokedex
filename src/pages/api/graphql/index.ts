@@ -15,12 +15,24 @@ export const config = {
 
 export default apolloServer.createHandler({ path: '/api/graphql' });
 
-export const queryGraphQL = async (query: string, variables: any = {}) => {
+export interface ApolloQueryResponse<T> {
+  data?: T;
+  error?: string;
+}
+
+export async function queryApolloServer<T>(
+  query: string,
+  variables: any = {}
+): Promise<ApolloQueryResponse<T>> {
   const { data, errors } = await apolloServer.executeOperation({
     query,
     variables,
   });
 
-  // TODO: ensure errors are serializable for getServerSideProps
-  return { data, errors: errors ? true : false };
-};
+  const error = errors?.[0].message;
+
+  return {
+    data: data as T,
+    ...(error ? { error } : {}),
+  };
+}

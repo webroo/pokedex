@@ -1,7 +1,7 @@
 import { RESTDataSource } from 'apollo-datasource-rest';
 import { NamedApiResourceList } from './pokeApiTypes';
 
-export type ResourceType = 'pokemon' | 'ability';
+export type ResourceType = 'pokemon' | 'ability' | 'type';
 
 const camelCaseKeys = (obj: any): any => {
   if (obj != null && obj.constructor === Object) {

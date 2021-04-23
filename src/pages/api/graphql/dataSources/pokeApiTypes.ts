@@ -14,10 +14,20 @@ export interface Ability {
   isMainSeries: boolean;
 }
 
+export interface Type {
+  id: string;
+  name: string;
+}
+
 export interface PokemonAbility {
   isHidden: boolean;
   slot: number;
   ability: NamedApiResource;
+}
+
+export interface PokemonType {
+  slot: number;
+  type: NamedApiResource;
 }
 
 export interface Species {
@@ -50,4 +60,5 @@ export interface Pokemon {
   abilities: PokemonAbility[];
   forms: NamedApiResource[];
   sprites: PokemonSprites;
+  types: PokemonType[];
 }

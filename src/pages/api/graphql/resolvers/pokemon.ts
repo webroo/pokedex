@@ -4,6 +4,8 @@ import {
   PokemonAbility,
   Ability,
   Form,
+  PokemonType,
+  Type,
 } from '../dataSources/pokeApiTypes';
 import {
   rootResource,
@@ -21,11 +23,15 @@ export default {
   PokemonAbility: {
     ability: linkedResource<PokemonAbility, Ability>(parent => parent.ability),
   },
+  PokemonType: {
+    type: linkedResource<PokemonType, Type>(parent => parent.type),
+  },
   Pokemon: {
     species: linkedResource<Pokemon, Species>(parent => parent.species),
     forms: connectionToResourceArray<Pokemon, Form>(parent => parent.forms),
     abilities: connectionToArray<Pokemon, PokemonAbility>(
       parent => parent.abilities
     ),
+    types: connectionToArray<Pokemon, PokemonType>(parent => parent.types),
   },
 };

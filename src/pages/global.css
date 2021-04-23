@@ -2,6 +2,7 @@ html,
 body {
   padding: 0;
   margin: 0;
+  font-family: sans-serif;
 }
 
 * {
@@ -14,4 +15,15 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 1.2em;
 }

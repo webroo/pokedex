@@ -19,6 +19,16 @@ export default gql`
     items: [PokemonAbility!]!
   }
 
+  type PokemonType {
+    slot: Int!
+    type: Type!
+  }
+
+  type PokemonTypeConnection {
+    totalItems: Int!
+    items: [PokemonType]!
+  }
+
   type Form {
     id: String!
     name: String!
@@ -44,9 +54,10 @@ export default gql`
     weight: Int!
     baseExperience: Int!
     species: Species!
+    sprites: PokemonSprites!
     abilities(offset: Int = 0, limit: Int = 20): PokemonAbilityConnection!
     forms(offset: Int = 0, limit: Int = 20): FormConnection!
-    sprites: PokemonSprites!
+    types(offset: Int = 0, limit: Int = 20): PokemonTypeConnection!
   }
 
   type PokemonConnection {

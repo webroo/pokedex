@@ -1,43 +1,86 @@
 import React, { FunctionComponent } from 'react';
-import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Image from 'next/image';
-import { GetPokemonResult, GET_POKEMON_QUERY } from '../../apollo/getPokemon';
-import { capitalize } from '../../utils/stringUtils';
-import { ApolloQueryResponse, queryApolloServer } from '../api/graphql';
+import cn from 'classnames';
+import { useGetPokemon, GetPokemonResult } from '../../apollo/getPokemon';
+import {
+  capitalize,
+  formatHeight,
+  formatPokemonID,
+  formatWeight,
+} from '../../utils/stringUtils';
+import styles from './[id].module.css';
 
-export type PokemonProps = ApolloQueryResponse<GetPokemonResult>;
+interface PokemonProps {
+  pokemon: GetPokemonResult['pokemon'];
+}
 
-export const getServerSideProps: GetServerSideProps<PokemonProps> = async context => {
-  const response = await queryApolloServer<GetPokemonResult>(
-    GET_POKEMON_QUERY,
-    { id: context.query.id }
+const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon }) => {
+  const stats = [
+    { title: 'Height:', value: formatHeight(pokemon.height) },
+    { title: 'Weight:', value: formatWeight(pokemon.weight) },
+  ];
+
+  return (
+    <>
+      <h1 className={styles.header}>
+        <span>{capitalize(pokemon.name)}</span>
+        <span className={styles.headerNumber}>
+          #{formatPokemonID(pokemon.id)}
+        </span>
+      </h1>
+      <div className={styles.image}>
+        <Image
+          src={pokemon.sprites.frontDefault}
+          width={192}
+          height={192}
+          alt={pokemon.name}
+        />
+      </div>
+      <h2>Attributes</h2>
+      <ul className={styles.stats}>
+        {stats.map(stat => (
+          <li key={stat.title} className={styles.stat}>
+            <span className={styles.statTitle}>{stat.title}</span>
+            <span>{stat.value}</span>
+          </li>
+        ))}
+      </ul>
+      <h2>Type</h2>
+      <ul className={styles.types}>
+        {pokemon.types.items.map(({ type }) => (
+          <li
+            key={type.id}
+            className={cn(styles.type, styles[`type-${type.name}`])}
+          >
+            {capitalize(type.name)}
+          </li>
+        ))}
+      </ul>
+    </>
   );
-  return {
-    props: response,
-  };
 };
 
-const Pokemon: FunctionComponent<PokemonProps> = ({ data, error }) => {
+const PokemonPage: FunctionComponent = () => {
+  const { query } = useRouter();
+
+  const { loading, data, error } = useGetPokemon({ id: query.id?.toString() });
+
   return (
     <>
       <Head>
         <title>Pokédex - {capitalize(data?.pokemon?.name ?? '')}</title>
       </Head>
-      {error && <div>{error}</div>}
-      {data?.pokemon && (
+      <div className={styles.wrapper}>
         <div>
-          <h1>{capitalize(data.pokemon.name)}</h1>
-          <Image
-            src={data.pokemon.sprites.frontDefault}
-            width={96}
-            height={96}
-            alt={data.pokemon.name}
-          />
+          {loading && <div>Loading...</div>}
+          {error && <div>{error}</div>}
+          {data?.pokemon && <Pokemon pokemon={data.pokemon} />}
         </div>
-      )}
+      </div>
     </>
   );
 };
 
-export default Pokemon;
+export default PokemonPage;

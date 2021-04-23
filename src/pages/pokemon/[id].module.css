@@ -1,0 +1,71 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.header {
+  margin-bottom: 0;
+}
+
+.headerNumber {
+  color: #666;
+  margin-left: 0.25em;
+  font-weight: normal;
+}
+
+.image {
+  text-align: center;
+  image-rendering: pixelated;
+}
+
+.stats {
+  background: #6699ee;
+  padding: 0.8em;
+  border-radius: 0.5em;
+}
+
+.stat {
+  margin-bottom: 0.5em;
+}
+.stat:last-child {
+  margin-bottom: 0;
+}
+
+.statTitle {
+  color: white;
+  margin-right: 0.5em;
+}
+
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.type {
+  width: 48%;
+  padding: 0.3em;
+  border-radius: 0.5em;
+  text-align: center;
+  color: white;
+}
+
+.type-grass {
+  background: #9bcc50;
+}
+
+.type-poison {
+  background: #b97fc9;
+}
+
+.type-fire {
+  background: #fd7d24;
+}
+
+.type-flying {
+  background: #999999;
+}
+
+.type-water {
+  background: #4592c4;
+}

@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import Image from 'next/image';
 import cn from 'classnames';
-import { GetPokemonResult } from '../../apollo/getPokemon';
 import {
   capitalize,
   formatHeight,
@@ -9,9 +8,10 @@ import {
   formatWeight,
 } from '../../utils/stringUtils';
 import styles from './Pokemon.module.css';
+import { GetPokemon_pokemon } from '../../apollo/__generated__/GetPokemon';
 
 interface PokemonProps {
-  pokemon: GetPokemonResult['pokemon'];
+  pokemon: GetPokemon_pokemon;
 }
 
 export const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon }) => {

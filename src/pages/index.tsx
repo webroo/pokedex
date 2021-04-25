@@ -4,7 +4,7 @@ import Head from 'next/head';
 import {
   GetAllPokemonResult,
   GET_ALL_POKEMON_QUERY,
-} from '../apollo/getAllPokemon';
+} from '../apollo/allPokemon';
 import { ApolloQueryResponse, queryApolloServer } from './api/graphql';
 import styles from './index.module.css';
 import { PokemonGrid } from '../components/pokemonGrid/PokemonGrid';

@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint src/**/*",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "download-schema": "apollo service:download --endpoint=http://localhost:3000/api/graphql graphql-schema.json",
+    "codegen-generate": "apollo codegen:generate --localSchemaFile=graphql-schema.json --target=typescript --tagName=gql --excludes='src/pages/api/**' --addTypename",
+    "generate-types": "npm run download-schema && npm run codegen-generate"
   },
   "dependencies": {
     "@apollo/client": "^3.3.14",
@@ -24,6 +27,7 @@
     "@types/react": "^17.0.3",
     "@typescript-eslint/eslint-plugin": "^4.21.0",
     "@typescript-eslint/parser": "^4.21.0",
+    "apollo": "^2.32.8",
     "eslint": "^7.24.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-prettier": "^3.3.1",

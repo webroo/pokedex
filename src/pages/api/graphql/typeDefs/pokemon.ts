@@ -26,7 +26,7 @@ export default gql`
 
   type PokemonTypeConnection {
     totalItems: Int!
-    items: [PokemonType]!
+    items: [PokemonType!]!
   }
 
   type Form {

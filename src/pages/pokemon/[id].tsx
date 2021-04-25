@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react';
 import { useRouter } from 'next/router';
-import { useGetPokemon } from '../../apollo/getPokemon';
+import { useGetPokemon } from '../../apollo/pokemon';
 import { Pokemon } from '../../components/pokemon/Pokemon';
 import styles from './[id].module.css';
 

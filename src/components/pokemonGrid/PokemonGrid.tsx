@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { GetAllPokemonResult } from '../../apollo/getAllPokemon';
+import { GetAllPokemonResult } from '../../apollo/allPokemon';
 import { capitalize, formatPokemonID } from '../../utils/stringUtils';
 import styles from './PokemonGrid.module.css';
 

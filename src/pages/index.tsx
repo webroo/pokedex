@@ -1,35 +1,13 @@
 import React, { FunctionComponent } from 'react';
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
-import Image from 'next/image';
 import {
   GetAllPokemonResult,
   GET_ALL_POKEMON_QUERY,
 } from '../apollo/getAllPokemon';
 import { ApolloQueryResponse, queryApolloServer } from './api/graphql';
-import { capitalize } from '../utils/stringUtils';
 import styles from './index.module.css';
-
-interface PokemonItemProps {
-  id: string;
-  name: string;
-  spriteUrl: string;
-}
-
-const PokemonItem: FunctionComponent<PokemonItemProps> = ({
-  id,
-  name,
-  spriteUrl,
-}) => (
-  <Link href={`/pokemon/${name}`}>
-    <a className={styles.pokemonListItem}>
-      <Image src={spriteUrl} width={96} height={96} alt={name} />
-      <div>#{id}</div>
-      <div>{capitalize(name)}</div>
-    </a>
-  </Link>
-);
+import { PokemonGrid } from '../components/pokemonGrid/PokemonGrid';
 
 export type PokemonListProps = ApolloQueryResponse<GetAllPokemonResult>;
 
@@ -49,21 +27,10 @@ const PokemonList: FunctionComponent<PokemonListProps> = ({ data, error }) => {
       <Head>
         <title>Pokédex</title>
       </Head>
-      <main>
+      <main className={styles.wrapper}>
         <h1>Pokédex</h1>
         {error && <div>{error}</div>}
-        {data && (
-          <div className={styles.pokemonList}>
-            {data.allPokemon.items.map(pokemon => (
-              <PokemonItem
-                key={pokemon.id}
-                id={pokemon.id}
-                name={pokemon.name}
-                spriteUrl={pokemon.sprites.frontDefault}
-              />
-            ))}
-          </div>
-        )}
+        {data && <PokemonGrid allPokemon={data.allPokemon} />}
       </main>
     </>
   );

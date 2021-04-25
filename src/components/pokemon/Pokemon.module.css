@@ -1,0 +1,98 @@
+.header {
+  margin-bottom: 0.5rem;
+}
+
+.headerNumber {
+  color: #666;
+  margin-left: 0.5rem;
+  font-weight: normal;
+}
+
+.image {
+  text-align: center;
+  image-rendering: pixelated;
+}
+
+.stats {
+  background: #77aaff;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+}
+
+.stat {
+  margin-bottom: 0.5rem;
+}
+.stat:last-child {
+  margin-bottom: 0;
+}
+
+.statTitle {
+  color: white;
+  margin-right: 0.5rem;
+}
+
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.type {
+  width: 48%;
+  padding: 0.3rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  color: white;
+}
+
+.type-grass {
+  background: #9bcc50;
+}
+
+.type-poison {
+  background: #b97fc9;
+}
+
+.type-fire {
+  background: #fd7d24;
+}
+
+.type-flying {
+  background: #559999;
+}
+
+.type-water {
+  background: #4592c4;
+}
+
+.type-bug {
+  background: #729f3f;
+}
+
+.type-normal {
+  background: #a4acaf;
+}
+
+.type-electric {
+  background: #eed535;
+}
+
+.type-ground {
+  background: #ab9842;
+}
+
+.type-fairy {
+  background: #fdb9e9;
+}
+
+.type-fighting {
+  background: #d56723;
+}
+
+.type-psychic {
+  background: #f366b9;
+}
+
+.type-ice {
+  background: #51c4e7;
+}

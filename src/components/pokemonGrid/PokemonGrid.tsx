@@ -16,7 +16,7 @@ const PokemonItem: FunctionComponent<PokemonItemProps> = ({
   name,
   spriteUrl,
 }) => (
-  <div className={styles.pokemonGridItem}>
+  <div className={styles.gridItem}>
     <Link href={`/pokemon/${name}`}>
       <a>
         <div className={styles.pokemonImage}>
@@ -38,7 +38,7 @@ interface PokemonGridProps {
 export const PokemonGrid: FunctionComponent<PokemonGridProps> = ({
   allPokemon,
 }) => (
-  <div className={styles.pokemonGrid}>
+  <div className={styles.grid}>
     {allPokemon.items.map(pokemon => (
       <PokemonItem
         key={pokemon.id}

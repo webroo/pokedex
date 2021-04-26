@@ -9,12 +9,19 @@ import {
 } from '../../utils/stringUtils';
 import styles from './Pokemon.module.css';
 import { GetPokemon_pokemon } from '../../apollo/__generated__/GetPokemon';
+import { FavouriteButton } from '../favouriteButton/FavouriteButton';
 
 interface PokemonProps {
   pokemon: GetPokemon_pokemon;
+  isFavourite: boolean;
+  onFavouriteClick: () => void;
 }
 
-export const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon }) => {
+export const Pokemon: FunctionComponent<PokemonProps> = ({
+  pokemon,
+  isFavourite,
+  onFavouriteClick,
+}) => {
   const stats = [
     { title: 'Height:', value: formatHeight(pokemon.height) },
     { title: 'Weight:', value: formatWeight(pokemon.weight) },
@@ -36,11 +43,16 @@ export const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon }) => {
           alt={pokemon.name}
         />
       </div>
+      <div>
+        <FavouriteButton selected={isFavourite} onClick={onFavouriteClick}>
+          Favourite
+        </FavouriteButton>
+      </div>
       <h2>Attributes</h2>
       <ul className={styles.stats}>
         {stats.map(stat => (
           <li key={stat.title} className={styles.stat}>
-            <span className={styles.statTitle}>{stat.title}</span>
+            <span className={styles.statTitle}>{stat.title}</span>{' '}
             <span>{stat.value}</span>
           </li>
         ))}

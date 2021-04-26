@@ -14,7 +14,7 @@
 }
 
 .stats {
-  background: #77aaff;
+  background: #ddd;
   padding: 0.8rem;
   border-radius: 0.5rem;
 }
@@ -27,8 +27,7 @@
 }
 
 .statTitle {
-  color: white;
-  margin-right: 0.5rem;
+  font-weight: bold;
 }
 
 .types {

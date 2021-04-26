@@ -22,7 +22,7 @@ export interface ApolloQueryResponse<T> {
 
 export async function queryApolloServer<T>(
   query: string,
-  variables: any = {}
+  variables: Record<string, any>
 ): Promise<ApolloQueryResponse<T>> {
   const { data, errors } = await apolloServer.executeOperation({
     query,

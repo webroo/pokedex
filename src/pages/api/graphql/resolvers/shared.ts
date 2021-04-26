@@ -58,6 +58,22 @@ export const linkedResource = <TParent, TResource>(
   return await dataSources.pokeApi.getUrl<TResource>(resource.url);
 };
 
+export const linkedResourceArray = <TParent, TResource>(
+  fieldSelector: (parent: TParent) => NamedApiResource[]
+) => async (
+  parent: TParent,
+  _: void,
+  { dataSources }: ResolverContext
+): Promise<TResource[]> => {
+  const resources = fieldSelector(parent);
+  const fetchedResources = await Promise.all(
+    resources.map(resource =>
+      dataSources.pokeApi.getUrl<TResource>(resource.url)
+    )
+  );
+  return fetchedResources;
+};
+
 export const connectionToResourceArray = <TParent, TResource>(
   fieldSelector: (parent: TParent) => NamedApiResource[]
 ) => async (

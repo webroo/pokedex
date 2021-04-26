@@ -11,8 +11,7 @@ import {
   rootResource,
   rootResourceList,
   linkedResource,
-  connectionToResourceArray,
-  connectionToArray,
+  linkedResourceArray,
 } from './shared';
 
 export default {
@@ -28,10 +27,6 @@ export default {
   },
   Pokemon: {
     species: linkedResource<Pokemon, Species>(parent => parent.species),
-    forms: connectionToResourceArray<Pokemon, Form>(parent => parent.forms),
-    abilities: connectionToArray<Pokemon, PokemonAbility>(
-      parent => parent.abilities
-    ),
-    types: connectionToArray<Pokemon, PokemonType>(parent => parent.types),
+    forms: linkedResourceArray<Pokemon, Form>(parent => parent.forms),
   },
 };

@@ -12,21 +12,15 @@ export interface GetPokemon_pokemon_sprites {
   frontDefault: string;
 }
 
-export interface GetPokemon_pokemon_types_items_type {
+export interface GetPokemon_pokemon_types_type {
   __typename: "Type";
   id: string;
   name: string;
 }
 
-export interface GetPokemon_pokemon_types_items {
-  __typename: "PokemonType";
-  slot: number;
-  type: GetPokemon_pokemon_types_items_type;
-}
-
 export interface GetPokemon_pokemon_types {
-  __typename: "PokemonTypeConnection";
-  items: GetPokemon_pokemon_types_items[];
+  __typename: "PokemonType";
+  type: GetPokemon_pokemon_types_type;
 }
 
 export interface GetPokemon_pokemon {
@@ -36,7 +30,7 @@ export interface GetPokemon_pokemon {
   height: number;
   weight: number;
   sprites: GetPokemon_pokemon_sprites;
-  types: GetPokemon_pokemon_types;
+  types: GetPokemon_pokemon_types[];
 }
 
 export interface GetPokemon {

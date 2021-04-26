@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
-import { GetPokemon } from './__generated__/GetPokemon';
+import { Optional } from '../utils/typeUtils';
+import { GetPokemon, GetPokemonVariables } from './__generated__/GetPokemon';
 
 export const GET_POKEMON = gql`
   query GetPokemon($id: ID!) {
@@ -12,23 +13,18 @@ export const GET_POKEMON = gql`
         frontDefault
       }
       types {
-        items {
-          slot
-          type {
-            id
-            name
-          }
+        type {
+          id
+          name
         }
       }
     }
   }
 `;
 
-export interface GetPokemonVariables {
-  id?: string;
-}
-
-export const useGetPokemon = (variables: GetPokemonVariables) => {
+export const useGetPokemon = (
+  variables: Optional<GetPokemonVariables, 'id'>
+) => {
   return useQuery<GetPokemon>(GET_POKEMON, {
     variables,
     skip: !variables.id,

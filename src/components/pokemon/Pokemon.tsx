@@ -47,7 +47,7 @@ export const Pokemon: FunctionComponent<PokemonProps> = ({ pokemon }) => {
       </ul>
       <h2>Type</h2>
       <ul className={styles.types}>
-        {pokemon.types.items.map(({ type }) => (
+        {pokemon.types.map(({ type }) => (
           <li
             key={type.id}
             className={cn(styles.type, styles[`type-${type.name}`])}

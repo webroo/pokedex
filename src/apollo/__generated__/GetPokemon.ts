@@ -34,7 +34,7 @@ export interface GetPokemon_pokemon {
 }
 
 export interface GetPokemon {
-  pokemon: GetPokemon_pokemon | null;
+  pokemon: GetPokemon_pokemon;
 }
 
 export interface GetPokemonVariables {

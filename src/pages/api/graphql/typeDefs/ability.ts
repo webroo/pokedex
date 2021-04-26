@@ -13,7 +13,7 @@ export default gql`
   }
 
   extend type Query {
-    ability(id: ID!): Ability
+    ability(id: ID!): Ability!
     allAbilities(offset: Int!, limit: Int!): AbilityConnection!
   }
 `;

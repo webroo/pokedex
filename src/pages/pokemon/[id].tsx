@@ -8,7 +8,7 @@ const PokemonPage: FunctionComponent = () => {
   const { query } = useRouter();
   const id = query.id as string | undefined;
 
-  const { loading, data, error } = useGetPokemon({ id });
+  const { data, error } = useGetPokemon({ id });
 
   const [isFavourite, setIsFavourite] = useState(false);
 
@@ -16,14 +16,18 @@ const PokemonPage: FunctionComponent = () => {
     <>
       <div className={styles.wrapper}>
         <div>
-          {loading && <div>Loading...</div>}
-          {error && <div>{error.message}</div>}
-          {data?.pokemon && (
-            <Pokemon
-              pokemon={data.pokemon}
-              isFavourite={isFavourite}
-              onFavouriteClick={() => setIsFavourite(!isFavourite)}
-            />
+          {error ? (
+            <div>{error.message}</div>
+          ) : data ? (
+            <div>
+              <Pokemon
+                pokemon={data.pokemon}
+                isFavourite={isFavourite}
+                onFavouriteClick={() => setIsFavourite(!isFavourite)}
+              />
+            </div>
+          ) : (
+            <div>Loading...</div>
           )}
         </div>
       </div>

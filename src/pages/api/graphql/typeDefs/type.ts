@@ -12,7 +12,7 @@ export default gql`
   }
 
   extend type Query {
-    type(id: ID!): Type
+    type(id: ID!): Type!
     allTypes(offset: Int!, limit: Int!): TypeConnection!
   }
 `;

@@ -50,7 +50,7 @@ export default gql`
   }
 
   extend type Query {
-    pokemon(id: ID!): Pokemon
+    pokemon(id: ID!): Pokemon!
     allPokemon(offset: Int!, limit: Int!): PokemonConnection!
   }
 `;

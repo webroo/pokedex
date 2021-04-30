@@ -2,11 +2,15 @@ import { ApolloServer } from 'apollo-server-micro';
 import dataSources from './dataSources';
 import typeDefs from './typeDefs';
 import resolvers from './resolvers';
+import { FavouritePokemon } from './dataSources/favouritePokemon';
 
 const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   dataSources: () => dataSources,
+  context: {
+    favouritePokemon: new FavouritePokemon(),
+  },
 });
 
 export const config = {

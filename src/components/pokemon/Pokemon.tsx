@@ -13,13 +13,11 @@ import { FavouriteButton } from '../favouriteButton/FavouriteButton';
 
 interface PokemonProps {
   pokemon: GetPokemon_pokemon;
-  isFavourite: boolean;
   onFavouriteClick: () => void;
 }
 
 export const Pokemon: FunctionComponent<PokemonProps> = ({
   pokemon,
-  isFavourite,
   onFavouriteClick,
 }) => {
   const stats = [
@@ -44,7 +42,10 @@ export const Pokemon: FunctionComponent<PokemonProps> = ({
         />
       </div>
       <div>
-        <FavouriteButton selected={isFavourite} onClick={onFavouriteClick}>
+        <FavouriteButton
+          selected={pokemon.favourite}
+          onClick={onFavouriteClick}
+        >
           Favourite
         </FavouriteButton>
       </div>

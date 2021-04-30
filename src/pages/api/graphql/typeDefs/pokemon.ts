@@ -42,6 +42,7 @@ export default gql`
     abilities: [PokemonAbility!]!
     forms: [Form!]!
     types: [PokemonType!]!
+    favourite: Boolean!
   }
 
   type PokemonConnection {
@@ -52,5 +53,9 @@ export default gql`
   extend type Query {
     pokemon(id: ID!): Pokemon!
     allPokemon(offset: Int!, limit: Int!): PokemonConnection!
+  }
+
+  extend type Mutation {
+    favouritePokemon(id: ID!, favourite: Boolean!): Pokemon!
   }
 `;

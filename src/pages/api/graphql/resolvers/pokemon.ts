@@ -7,6 +7,7 @@ import {
   PokemonType,
   Type,
 } from '../dataSources/pokeApiTypes';
+import { ResolverContext } from '../resolverContext';
 import {
   rootResource,
   rootResourceList,
@@ -19,6 +20,16 @@ export default {
     pokemon: rootResource<Pokemon>('pokemon'),
     allPokemon: rootResourceList<Pokemon>('pokemon'),
   },
+  Mutation: {
+    favouritePokemon: (
+      _: void,
+      { id, favourite }: { id: string; favourite: boolean },
+      { favouritePokemon }: ResolverContext
+    ) => {
+      favouritePokemon.setFavourite(id, favourite);
+      return { id, favourite };
+    },
+  },
   PokemonAbility: {
     ability: linkedResource<PokemonAbility, Ability>(parent => parent.ability),
   },
@@ -28,5 +39,12 @@ export default {
   Pokemon: {
     species: linkedResource<Pokemon, Species>(parent => parent.species),
     forms: linkedResourceArray<Pokemon, Form>(parent => parent.forms),
+    favourite: (
+      parent: Pokemon,
+      _: void,
+      { favouritePokemon }: ResolverContext
+    ) => {
+      return favouritePokemon.getFavoutite(parent.id);
+    },
   },
 };

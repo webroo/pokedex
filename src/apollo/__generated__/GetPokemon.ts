@@ -29,6 +29,7 @@ export interface GetPokemon_pokemon {
   name: string;
   height: number;
   weight: number;
+  favourite: boolean;
   sprites: GetPokemon_pokemon_sprites;
   types: GetPokemon_pokemon_types[];
 }

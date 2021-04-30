@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent } from 'react';
 import { useRouter } from 'next/router';
-import { useGetPokemon } from '../../apollo/pokemon';
+import { useGetPokemon, useFavouritePokemon } from '../../apollo/pokemon';
 import { Pokemon } from '../../components/pokemon/Pokemon';
 import styles from './[id].module.css';
 
@@ -9,8 +9,7 @@ const PokemonPage: FunctionComponent = () => {
   const id = query.id as string | undefined;
 
   const { data, error } = useGetPokemon({ id });
-
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [setFavouritePokemon] = useFavouritePokemon();
 
   return (
     <>
@@ -22,8 +21,14 @@ const PokemonPage: FunctionComponent = () => {
             <div>
               <Pokemon
                 pokemon={data.pokemon}
-                isFavourite={isFavourite}
-                onFavouriteClick={() => setIsFavourite(!isFavourite)}
+                onFavouriteClick={() =>
+                  setFavouritePokemon({
+                    variables: {
+                      id: data.pokemon.id,
+                      favourite: !data.pokemon.favourite,
+                    },
+                  })
+                }
               />
             </div>
           ) : (
